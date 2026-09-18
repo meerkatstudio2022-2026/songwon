@@ -56,7 +56,23 @@ button{font-family:inherit}
 .btn-wine{background:var(--wine);color:var(--gold);border-color:var(--wine)}
 .btn-wine:hover{background:var(--wine-soft)}
 .btn-lg{padding:15px 30px;font-size:16px}
+.brand,.brand b,.brand span,.btn{white-space:nowrap}
 @media(max-width:900px){.menu{display:none}.nav-cta .btn-line{display:none}}
+@media(max-width:640px){
+  .nav .wrap{height:56px}
+  .brand span{display:none}
+  .brand b{font-size:18px}
+  .nav-cta .btn{padding:9px 16px;font-size:13.5px}
+  .hero .wrap{padding-top:56px}
+  .eyebrow{font-size:12px;letter-spacing:.1em;line-height:1.5}
+  .eyebrow::before{width:18px;flex:0 0 18px}
+  .hero h1{font-size:clamp(32px,9.5vw,44px)}
+  .hero .sub{font-size:15px}
+  .hero .sub br{display:none}
+  .hero-tel a{font-size:32px}
+  .sec-head h2{font-size:clamp(24px,7vw,30px)}
+  .sec-head .lead{font-size:15px}
+}
 
 /* hero */
 .hero{position:relative;color:var(--ivory);background:var(--wine-deep);overflow:hidden;isolation:isolate}
@@ -151,7 +167,8 @@ button{font-family:inherit}
 @media(max-width:900px){.feat-grid{grid-template-columns:1fr}}
 .feat{background:var(--white);border:1px solid var(--line);border-radius:6px;overflow:hidden;display:flex;flex-direction:column;transition:transform .4s var(--ease),box-shadow .4s var(--ease)}
 .feat:hover{transform:translateY(-6px);box-shadow:0 28px 50px -24px rgba(43,16,19,.4)}
-.feat .fimg{aspect-ratio:16/10;overflow:hidden;position:relative}
+.feat .fimg{aspect-ratio:16/10;overflow:hidden;position:relative;cursor:zoom-in}
+.feat .fimg .zoomtip{position:absolute;right:10px;top:10px;z-index:1;font-size:11.5px;padding:5px 10px;border-radius:999px;background:rgba(23,10,12,.75);color:var(--gold);letter-spacing:.05em}
 .feat .fimg img{width:100%;height:100%;object-fit:cover;object-position:left top;transition:transform 1.4s var(--ease)}
 .feat:hover .fimg img{transform:scale(1.06)}
 .feat .fbody{padding:22px 22px 24px;display:flex;flex-direction:column;gap:10px;flex:1}
@@ -458,7 +475,7 @@ form.rf{background:rgba(255,255,255,.04);border:1px solid rgba(240,209,138,.22);
     </div>
     <div class="feat-grid">
       <article class="feat rv">
-        <div class="fimg"><img src="img/hospital.jpg" alt="위례성심병원 복합타운 조감도와 기대효과 표"></div>
+        <div class="fimg zoom" data-lb="img/hospital.jpg" data-cap="위례성심병원 — 자료 원본"><span class="zoomtip">클릭 확대</span><img src="img/hospital.jpg" alt="위례성심병원 복합타운 조감도와 기대효과 표"></div>
         <div class="fbody">
           <span class="k">01 · Medical</span>
           <h3>1,000병상 위례성심병원 확정 — 문전약국 길목</h3>
@@ -473,7 +490,7 @@ form.rf{background:rgba(255,255,255,.04);border:1px solid rgba(240,209,138,.22);
         </div>
       </article>
       <article class="feat rv d1">
-        <div class="fimg"><img src="img/sports.jpg" alt="위례복합체육센터 외관과 층별 시설표"></div>
+        <div class="fimg zoom" data-lb="img/sports.jpg" data-cap="위례복합체육센터 — 자료 원본"><span class="zoomtip">클릭 확대</span><img src="img/sports.jpg" alt="위례복합체육센터 외관과 층별 시설표"></div>
         <div class="fbody">
           <span class="k">02 · Anchor</span>
           <h3>443억 복합체육센터 개관 — 상시 집객 엔진</h3>
@@ -488,7 +505,7 @@ form.rf{background:rgba(255,255,255,.04);border:1px solid rgba(240,209,138,.22);
         </div>
       </article>
       <article class="feat rv d2">
-        <div class="fimg"><img src="img/school.jpg" alt="북위례 아파트 단지 앞 학교 과밀 반대 현수막 사진"></div>
+        <div class="fimg zoom" data-lb="img/school.jpg" data-cap="북위례 학령인구 밀도 — 자료 원본"><span class="zoomtip">클릭 확대</span><img src="img/school.jpg" alt="북위례 아파트 단지 앞 학교 과밀 반대 현수막 사진"></div>
         <div class="fbody">
           <span class="k">03 · Education</span>
           <h3>학교가 모자란 동네, 학원 자리는 더 모자랍니다</h3>
@@ -897,12 +914,23 @@ form.rf{background:rgba(255,255,255,.04);border:1px solid rgba(240,209,138,.22);
 
   /* lightbox */
   var lb=document.getElementById('lb'), lbimg=document.getElementById('lbimg'), lbcap=document.getElementById('lbcap');
-  function openLb(src,cap){ lbimg.src=src; lbimg.alt=cap||''; lbcap.textContent=cap||''; lb.classList.add('on'); document.body.style.overflow='hidden'; }
-  function closeLb(){ lb.classList.remove('on'); document.body.style.overflow=''; }
-  document.querySelectorAll('[data-lb]').forEach(function(el){ el.addEventListener('click',function(ev){ ev.preventDefault(); openLb(el.getAttribute('data-lb'), el.getAttribute('data-cap')); }); });
-  document.getElementById('lbx').addEventListener('click',closeLb);
-  lb.addEventListener('click',function(e){ if(e.target===lb) closeLb(); });
-  addEventListener('keydown',function(e){ if(e.key==='Escape') closeLb(); });
+  function openLb(src,cap){ lbimg.src=src; lbimg.alt=cap||''; lbcap.textContent=cap||''; lb.classList.add('on'); document.body.style.overflow='hidden'; try{ history.pushState({sw:'lb'},''); }catch(e){} }
+  function closeLb(fromPop){ if(!lb.classList.contains('on')) return; lb.classList.remove('on'); document.body.style.overflow=''; if(!fromPop && history.state && history.state.sw==='lb'){ history.back(); } }
+  document.querySelectorAll('[data-lb]').forEach(function(el){ el.addEventListener('click',function(ev){ ev.preventDefault(); ev.stopPropagation(); openLb(el.getAttribute('data-lb'), el.getAttribute('data-cap')); }); });
+  document.getElementById('lbx').addEventListener('click',function(){closeLb(false)});
+  lb.addEventListener('click',function(e){ if(e.target===lb) closeLb(false); });
+  addEventListener('keydown',function(e){ if(e.key==='Escape') closeLb(false); });
+
+  /* 뒤로가기: 확대 사진 닫기 → 페이지 맨 위로 → 그다음에야 사이트 밖으로 */
+  var armed=false;
+  function arm(){ if(!armed){ try{ history.pushState({sw:'page'},''); armed=true; }catch(e){} } }
+  try{ history.replaceState({sw:'root'},''); }catch(e){}
+  addEventListener('scroll',function(){ if(!armed && scrollY>300) arm(); },{passive:true});
+  addEventListener('popstate',function(){
+    if(lb.classList.contains('on')){ closeLb(true); return; }
+    var st=history.state||{};
+    if(st.sw==='root'){ armed=false; window.scrollTo({top:0,behavior:'smooth'}); }
+  });
 
   /* phone format */
   var ph=document.getElementById('rPhone');
