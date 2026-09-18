@@ -855,7 +855,12 @@ form.rf{background:rgba(255,255,255,.04);border:1px solid rgba(240,209,138,.22);
      FORM_ENDPOINT 에 Formspree 주소를 넣으면 등록 즉시 이메일 알림이 옵니다.
      예) "https://formspree.io/f/xxxxxxxx"
      비워 두면 화면에서 접수 처리만 하고, 등록 내용을 브라우저에 임시 저장합니다. */
-  var FORM_ENDPOINT = "https://formspree.io/f/mdekoqgv";
+  var FORM_ENDPOINT = "";   /* Formspree 사용 시 여기에 주소. 비워 두면 아래 구글 설문지로 전송 */
+
+  /* 구글 설문지 연동 — 응답은 시트에 자동 기록 + 새 응답 이메일 알림 */
+  var GFORM = "https://docs.google.com/forms/d/e/1FAIpQLSdhrPMc59P3GQ2RwGnx-nQPad3RMlE2iLpiebgqhu7Gf0vxug/formResponse";
+  var GMAP = { 성함:"entry.370628461", 연락처:"entry.7624883", 구분:"entry.710785100", 관심층:"entry.748615800",
+               업종예산:"entry.320833476", 연락희망:"entry.223956581", 문의:"entry.1108094640", 출처:"entry.631993219" };
 
   document.documentElement.classList.remove('no-js');
 
@@ -961,6 +966,12 @@ form.rf{background:rgba(255,255,255,.04);border:1px solid rgba(240,209,138,.22);
     } else if(FORM_ENDPOINT){
       fetch(FORM_ENDPOINT,{method:'POST',headers:{'Accept':'application/json','Content-Type':'application/json'},body:JSON.stringify(data)})
         .then(function(r){ finish(r.ok); }).catch(function(){ finish(false); });
+    } else if(GFORM){
+      /* 구글 설문지는 응답을 읽을 수 없어(no-cors) 전송 완료 후 성공으로 처리 */
+      var fd=new FormData();
+      Object.keys(GMAP).forEach(function(k){ fd.append(GMAP[k], data[k]||''); });
+      fetch(GFORM,{method:'POST',mode:'no-cors',body:fd})
+        .then(function(){ finish(true); }).catch(function(){ finish(false); });
     } else { setTimeout(function(){ finish(true); },500); }
   });
 })();
